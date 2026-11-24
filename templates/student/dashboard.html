@@ -1,0 +1,196 @@
+{% extends "student/layout.html" %}
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content %}
+<!-- Top Row: Welcome Banner + Circular Gauges -->
+<div class="dash-top-grid">
+    <div class="welcome-banner" style="flex-direction: row; align-items: center; gap: 20px;">
+        <div style="flex: 1;">
+            <span style="font-size: 0.85rem; font-weight: 700; color: #2563eb;">Good Morning! 👋</span>
+            <h1>Welcome back, {{ user['full_name'].split()[0] }}!</h1>
+            <p>Your career journey is just getting started. Keep going, you're doing great!</p>
+            <div class="banner-actions">
+                <a href="{{ url_for('student_analyzer') }}" class="btn btn-primary">⬆ Upload Resume</a>
+                <a href="{{ url_for('student_jobs') }}" class="btn btn-white">🔍 Explore Jobs</a>
+            </div>
+        </div>
+        <div style="background: rgba(255,255,255,0.85); border: 1px solid #bfdbfe; border-radius: 16px; padding: 16px 20px; text-align: center; min-width: 155px;">
+            <div style="font-size: 2.2rem; margin-bottom: 4px;">💻</div>
+            <div style="font-size: 0.78rem; font-weight: 800; color: #1e40af; line-height: 1.25;">Build<br>Your Dream<br>Career!</div>
+        </div>
+    </div>
+
+    <div class="gauges-stack">
+        <div class="gauge-card">
+            <div class="gauge-ring" data-score="{{ ats_score }}" data-color="#10b981">
+                <span>{{ ats_score }}%</span>
+            </div>
+            <div>
+                <div style="font-weight: 700; font-size: 0.94rem;">ATS Score <span style="color: #16a34a; font-size: 0.76rem;">↗ +12%</span></div>
+                <div style="font-size: 0.78rem; color: #64748b;">Good match with job requirements</div>
+            </div>
+        </div>
+
+        <div class="gauge-card">
+            <div class="gauge-ring" data-score="{{ readiness_score }}" data-color="#2563eb">
+                <span>{{ readiness_score }}%</span>
+            </div>
+            <div>
+                <div style="font-weight: 700; font-size: 0.94rem;">Career Readiness <span style="color: #16a34a; font-size: 0.76rem;">↗ +8%</span></div>
+                <div style="font-size: 0.78rem; color: #64748b;">Your profile is well prepared</div>
+            </div>
+        </div>
+
+        <div class="gauge-card">
+            <div style="width: 56px; height: 56px; border-radius: 14px; background: #f3e8ff; color: #7c3aed; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.25rem; flex-shrink: 0;">
+                {{ recommended_jobs | length }}
+            </div>
+            <div>
+                <div style="font-weight: 700; font-size: 0.94rem; color: #2563eb;">Recommended Jobs</div>
+                <div style="font-size: 0.78rem; color: #64748b;">New opportunities for you</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Middle Row: 4 KPI Stat Cards -->
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div class="kpi-icon" style="background: #eff6ff; color: #2563eb;">📄</div>
+        <div>
+            <div class="kpi-lbl">Total Resumes</div>
+            <div class="kpi-val">{{ total_resumes }}</div>
+            <div style="font-size: 0.72rem; color: #16a34a; font-weight: 600;">↑ this week</div>
+        </div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-icon" style="background: #dcfce7; color: #16a34a;">💼</div>
+        <div>
+            <div class="kpi-lbl">Jobs Applied</div>
+            <div class="kpi-val">{{ jobs_applied }}</div>
+            <div style="font-size: 0.72rem; color: #16a34a; font-weight: 600;">↑ active tracking</div>
+        </div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-icon" style="background: #f3e8ff; color: #7c3aed;">🎓</div>
+        <div>
+            <div class="kpi-lbl">Internships</div>
+            <div class="kpi-val">{{ internship_count }}</div>
+            <div style="font-size: 0.72rem; color: #7c3aed; font-weight: 600;">↑ student roles</div>
+        </div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-icon" style="background: #fef3c7; color: #d97706;">⚡</div>
+        <div>
+            <div class="kpi-lbl">Skill Gaps</div>
+            <div class="kpi-val">{{ skill_gaps_count }}</div>
+            <div style="font-size: 0.72rem; color: #d97706; font-weight: 600;">Focus on improving</div>
+        </div>
+    </div>
+</div>
+
+<!-- 3-Column Widgets: Recent Resume Analysis | Recommended Jobs | Career Roadmap -->
+<div class="dash-bottom-grid" style="margin-bottom: 20px;">
+    <div class="card">
+        <div class="card-header">
+            <h3>Recent Resume Analysis</h3>
+            <a href="{{ url_for('student_history') }}">View All ▾</a>
+        </div>
+        {% for r in resumes %}
+          <div class="list-row">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                  <span style="font-size: 1.2rem;">📕</span>
+                  <div>
+                      <div style="font-weight: 700; font-size: 0.85rem;">{{ r['file_name'] }}</div>
+                      <div style="font-size: 0.72rem; color: #64748b;">Readiness: {{ r['readiness_score'] }}%</div>
+                  </div>
+              </div>
+              <span class="score-pill {% if r['ats_score'] >= 80 %}score-high{% elif r['ats_score'] >= 60 %}score-mid{% else %}score-low{% endif %}">
+                  {{ r['ats_score'] }}%<br><span style="font-size: 0.65rem;">ATS score</span>
+              </span>
+          </div>
+        {% else %}
+          <p style="font-size: 0.85rem; color: #64748b;">No resumes uploaded yet.</p>
+        {% endfor %}
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3>Recommended Jobs</h3>
+            <a href="{{ url_for('student_jobs') }}">View All ▾</a>
+        </div>
+        {% for j in recommended_jobs %}
+          <a href="{{ url_for('student_jobs') }}" class="list-row" style="text-decoration: none; color: inherit;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                  <div style="width: 34px; height: 34px; border-radius: 8px; background: #eff6ff; color: #1d4ed8; font-weight: 800; font-size: 0.75rem; display: flex; align-items: center; justify-content: center;">
+                      {{ j['company'][:3] | upper }}
+                  </div>
+                  <div>
+                      <div style="font-weight: 700; font-size: 0.85rem;">{{ j['title'] }}</div>
+                      <div style="font-size: 0.73rem; color: #64748b;">{{ j['company'] }} • {{ j['location'] }}</div>
+                  </div>
+              </div>
+              <span style="color: #94a3b8; font-weight: 700;">›</span>
+          </a>
+        {% endfor %}
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3>Career Roadmap</h3>
+            <a href="{{ url_for('student_roadmap') }}">View All ▾</a>
+        </div>
+        {% for title, desc in roadmap_steps %}
+          <div style="padding: 8px 0; border-bottom: 1px solid #f1f5f9;">
+              <div style="font-size: 0.83rem; font-weight: 700; color: #0f172a;">✅ {{ title }}</div>
+              <div style="font-size: 0.74rem; color: #64748b; margin-top: 2px;">{{ desc[:64] }}...</div>
+          </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Bottom Strip: AI Career Path Banner | Popular Courses | Upcoming Interview -->
+<div class="dash-bottom-grid">
+    <div style="background: linear-gradient(135deg, #0f172a, #1e3a8a); color: white; border-radius: 16px; padding: 22px; display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+            <span style="background: rgba(56, 189, 248, 0.25); color: #7dd3fc; font-size: 0.72rem; font-weight: 800; padding: 3px 9px; border-radius: 6px;">AI ASSISTANT</span>
+            <h3 style="font-size: 1.1rem; margin: 10px 0 6px;">Let AI Build Your Career Path</h3>
+            <p style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 16px;">Get personalized recommendations for jobs, learning, and skill development.</p>
+        </div>
+        <a href="{{ url_for('student_roadmap') }}" class="btn btn-primary" style="align-self: start;">Explore Now &rarr;</a>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3>Popular Courses</h3>
+            <a href="{{ url_for('student_roadmap') }}">View All ▾</a>
+        </div>
+        <div class="list-row">
+            <div>
+                <div style="font-weight: 700; font-size: 0.84rem;">Full Stack Web Development</div>
+                <div style="font-size: 0.72rem; color: #64748b;">Python • React • REST APIs</div>
+            </div>
+            <a href="{{ url_for('student_roadmap') }}" class="btn btn-primary" style="padding: 5px 10px; font-size: 0.74rem;">Start</a>
+        </div>
+        <div class="list-row">
+            <div>
+                <div style="font-weight: 700; font-size: 0.84rem;">Data Science with Python</div>
+                <div style="font-size: 0.72rem; color: #64748b;">SQL • Pandas • Analytics</div>
+            </div>
+            <a href="{{ url_for('student_roadmap') }}" class="btn btn-primary" style="padding: 5px 10px; font-size: 0.74rem;">Start</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3>Upcoming Interview</h3>
+            <a href="{{ url_for('student_interview_prep') }}">View All ▾</a>
+        </div>
+        <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 14px;">
+            <div style="font-weight: 800; font-size: 0.9rem; color: #1e3a8a;">📅 TCS Technical Interview</div>
+            <div style="font-size: 0.76rem; color: #475569; margin: 4px 0 12px;">Mock &amp; HR Readiness Practice</div>
+            <a href="{{ url_for('student_interview_prep') }}" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 8px;">Prepare Now</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

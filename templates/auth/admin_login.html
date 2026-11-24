@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal Login — ResumeNexovora AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+</head>
+<body class="auth-wrapper admin-theme">
+
+<header class="navbar" style="background: rgba(15, 23, 42, 0.95); border-bottom-color: #1e293b;">
+    <div class="nav-container">
+        <a href="{{ url_for('home') }}" class="brand" style="color: white;">
+            <div class="brand-icon" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">N</div>
+            <span>ResumeNexovora</span>
+            <span class="ai-pill" style="background: rgba(99, 102, 241, 0.2); color: #a5b4fc; border-color: #4f46e5;">ADMIN GATE</span>
+        </a>
+        <div class="nav-actions">
+            <a href="{{ url_for('home') }}" class="btn btn-hero-secondary" style="padding: 8px 16px; font-size: 0.85rem;">← Public Website</a>
+            <a href="{{ url_for('student_login') }}" class="btn btn-hero-secondary" style="padding: 8px 16px; font-size: 0.85rem;">Student Login</a>
+        </div>
+    </div>
+</header>
+
+<div class="auth-card-container">
+    <div class="auth-card">
+        <div style="display: inline-block; background: rgba(99, 102, 241, 0.2); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.4); font-size: 0.75rem; font-weight: 700; padding: 4px 12px; border-radius: 999px; margin-bottom: 12px;">
+            🛡️ RESTRICTED ADMINISTRATOR ACCESS
+        </div>
+        <h2>Admin Control Panel</h2>
+        <p class="desc">Authorized administrators only. All login attempts are monitored and logged.</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, msg in messages %}
+              <div class="alert alert-{{ category }}">{{ msg }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('admin_login') }}">
+            <div class="form-group">
+                <label for="email">Administrator Email</label>
+                <input type="email" id="email" name="email" class="form-control" placeholder="admin@resumenexovora.com" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Security Password</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #6366f1, #4f46e5);">
+                Authenticate & Enter Admin Panel →
+            </button>
+        </form>
+
+        <div class="demo-box">
+            <strong>Default Admin Credentials:</strong><br>
+            Email: <code>admin@resumenexovora.com</code> | Password: <code>Admin@123</code>
+            <button type="button" onclick="fillAdminDemo()" style="margin-top: 8px; background: #6366f1; color: white; border: none; padding: 5px 10px; border-radius: 6px; font-size: 0.76rem; cursor: pointer;">
+                Auto-Fill Admin Credentials
+            </button>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="footer-inner">
+        <span>&copy; 2026 ResumeNexovora AI — Security & Administration Module</span>
+    </div>
+</footer>
+
+<script>
+function fillAdminDemo() {
+    document.getElementById('email').value = 'admin@resumenexovora.com';
+    document.getElementById('password').value = 'Admin@123';
+}
+</script>
+</body>
+</html>

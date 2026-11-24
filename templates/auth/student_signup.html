@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Student Account — ResumeNexovora AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+</head>
+<body class="auth-wrapper">
+
+<header class="navbar">
+    <div class="nav-container">
+        <a href="{{ url_for('home') }}" class="brand">
+            <div class="brand-icon">N</div>
+            <span>ResumeNexovora</span>
+            <span class="ai-pill">AI</span>
+        </a>
+        <div class="nav-actions">
+            <a href="{{ url_for('home') }}" class="btn btn-outline">← Home</a>
+            <a href="{{ url_for('student_login') }}" class="btn btn-primary">Student Login</a>
+        </div>
+    </div>
+</header>
+
+<div class="auth-card-container">
+    <div class="auth-card" style="max-width: 480px;">
+        <div style="display: inline-block; background: #dcfce7; color: #15803d; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 999px; margin-bottom: 12px;">
+            ✨ FREE STUDENT REGISTRATION
+        </div>
+        <h2>Create Your Account</h2>
+        <p class="desc">Start analyzing your resume and discovering personalized career paths.</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, msg in messages %}
+              <div class="alert alert-{{ category }}">{{ msg }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('student_register') }}">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" name="full_name" class="form-control" placeholder="e.g., Priya Sharma" required>
+            </div>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" name="email" class="form-control" placeholder="priya@college.edu" required>
+            </div>
+            <div class="form-group">
+                <label>College / University</label>
+                <input type="text" name="college" class="form-control" placeholder="e.g., St. Ann's College of Engineering & Technology">
+            </div>
+            <div class="form-group">
+                <label>Target Career Role</label>
+                <select name="target_role" class="form-control">
+                    {% for r in roles %}
+                      <option value="{{ r }}">{{ r }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Create Password (min 6 characters)</label>
+                <input type="password" name="password" class="form-control" placeholder="Create a strong password" minlength="6" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px;">
+                Create Student Account →
+            </button>
+        </form>
+
+        <p style="text-align: center; margin-top: 18px; font-size: 0.88rem; color: #475569;">
+            Already registered? <a href="{{ url_for('student_login') }}" style="color: #2563eb; font-weight: 700; text-decoration: none;">Student Login</a>
+        </p>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="footer-inner">
+        <span>&copy; 2026 ResumeNexovora AI. All rights reserved.</span>
+    </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,118 @@
+{% extends "student/layout.html" %}
+{% block title %}Resume Analyzer{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 20px;">
+    <h2 style="font-size: 1.45rem;">AI Resume Analyzer & ATS Scorer</h2>
+    <p style="color: #64748b; font-size: 0.9rem;">Upload your PDF/DOCX/TXT resume or paste text below to check ATS compatibility and missing skills.</p>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1.15fr; gap: 22px; align-items: start;">
+    <div class="card">
+        <form method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label>Target Job Role</label>
+                <select name="target_role" class="form-control">
+                    {% for r in roles %}
+                      <option value="{{ r }}" {% if r == user['target_role'] %}selected{% endif %}>{{ r }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Upload Resume File (PDF, DOCX, or TXT — Max 5MB)</label>
+                <input type="file" name="resume_file" accept=".pdf,.docx,.txt" class="form-control" style="padding: 8px;">
+            </div>
+
+            <div style="text-align: center; color: #94a3b8; font-size: 0.8rem; font-weight: 700; margin: 12px 0;">— OR PASTE RESUME TEXT DIRECTLY —</div>
+
+            <div class="form-group">
+                <label>Paste Resume Content</label>
+                <textarea name="resume_text" rows="8" class="form-control" placeholder="Paste your resume summary, education, skills, projects, and internship details here..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px;">
+                🔍 Analyze Resume & Calculate ATS Score
+            </button>
+        </form>
+    </div>
+
+    <div class="card">
+        {% if result %}
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 14px; margin-bottom: 18px;">
+              <div>
+                  <span style="font-size: 0.76rem; color: #64748b;">ANALYZED FILE</span>
+                  <h3 style="font-size: 1.05rem;">{{ filename }}</h3>
+              </div>
+              <span class="score-pill {% if result['ats_score'] >= 80 %}score-high{% elif result['ats_score'] >= 60 %}score-mid{% else %}score-low{% endif %}" style="font-size: 0.95rem;">
+                  ATS Score: {{ result['ats_score'] }}%
+              </span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 18px;">
+              <div style="background: #f8fafc; padding: 14px; border-radius: 12px; text-align: center; border: 1px solid #e2e8f0;">
+                  <div style="font-size: 1.5rem; font-weight: 800; color: #2563eb;">{{ result['ats_score'] }}%</div>
+                  <div style="font-size: 0.76rem; color: #64748b;">ATS Score</div>
+              </div>
+              <div style="background: #f8fafc; padding: 14px; border-radius: 12px; text-align: center; border: 1px solid #e2e8f0;">
+                  <div style="font-size: 1.5rem; font-weight: 800; color: #16a34a;">{{ result['readiness_score'] }}%</div>
+                  <div style="font-size: 0.76rem; color: #64748b;">Readiness</div>
+              </div>
+              <div style="background: #f8fafc; padding: 14px; border-radius: 12px; text-align: center; border: 1px solid #e2e8f0;">
+                  <div style="font-size: 1.5rem; font-weight: 800; color: #0f172a;">{{ result['word_count'] }}</div>
+                  <div style="font-size: 0.76rem; color: #64748b;">Words Parsed</div>
+              </div>
+          </div>
+
+          <div style="margin-bottom: 16px;">
+              <strong style="font-size: 0.86rem;">Detected Sections:</strong>
+              <div style="margin-top: 6px;">
+                  {% for sec in result['detected_sections'] %}
+                    <span class="tag-chip tag-green">✓ {{ sec }}</span>
+                  {% endfor %}
+                  {% for sec in result['missing_sections'] %}
+                    <span class="tag-chip tag-red">✕ Missing {{ sec }}</span>
+                  {% endfor %}
+              </div>
+          </div>
+
+          <div style="margin-bottom: 16px;">
+              <strong style="font-size: 0.86rem;">Matched Skills:</strong>
+              <div style="margin-top: 6px;">
+                  {% if result['matched_skills'] %}
+                    {% for sk in result['matched_skills'] %}
+                      <span class="tag-chip tag-blue">{{ sk }}</span>
+                    {% endfor %}
+                  {% else %}
+                    <span style="font-size: 0.82rem; color: #64748b;">No standard tech keywords detected yet.</span>
+                  {% endif %}
+              </div>
+          </div>
+
+          <div style="margin-bottom: 16px;">
+              <strong style="font-size: 0.86rem;">Recommended Skills to Add (Skill Gaps):</strong>
+              <div style="margin-top: 6px;">
+                  {% for sk in result['missing_skills'] %}
+                    <span class="tag-chip tag-red">+ {{ sk }}</span>
+                  {% endfor %}
+              </div>
+          </div>
+
+          <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 14px;">
+              <strong style="font-size: 0.88rem; color: #1e40af;">Actionable Improvement Suggestions:</strong>
+              <ul style="margin-top: 8px; padding-left: 18px; font-size: 0.84rem; color: #1e3a8a;">
+                  {% for tip in result['suggestions'] %}
+                    <li style="margin-bottom: 5px;">{{ tip }}</li>
+                  {% endfor %}
+              </ul>
+          </div>
+        {% else %}
+          <div style="text-align: center; padding: 48px 20px; color: #64748b;">
+              <div style="font-size: 2.5rem; margin-bottom: 10px;">📊</div>
+              <h3>Ready to Scan Your Resume</h3>
+              <p style="font-size: 0.88rem; margin-top: 6px;">Upload a resume file on the left (or paste text) to receive a detailed ATS report, section check, and skill gap analysis.</p>
+          </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

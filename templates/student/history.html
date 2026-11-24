@@ -1,0 +1,51 @@
+{% extends "student/layout.html" %}
+{% block title %}Resume History{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <div>
+        <h2 style="font-size: 1.45rem;">Resume Analysis History</h2>
+        <p style="color: #64748b; font-size: 0.9rem;">All your previously scanned resumes and ATS improvement progress.</p>
+    </div>
+    <a href="{{ url_for('student_analyzer') }}" class="btn btn-primary">+ Analyze New Resume</a>
+</div>
+
+<div class="card">
+    {% if resumes %}
+      <table class="data-table">
+          <thead>
+              <tr>
+                  <th>File Name</th>
+                  <th>ATS Score</th>
+                  <th>Readiness</th>
+                  <th>Matched Skills</th>
+                  <th>Date</th>
+                  <th>Action</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for r in resumes %}
+                <tr>
+                    <td><strong>{{ r['file_name'] }}</strong></td>
+                    <td>
+                        <span class="score-pill {% if r['ats_score'] >= 80 %}score-high{% elif r['ats_score'] >= 60 %}score-mid{% else %}score-low{% endif %}">
+                            {{ r['ats_score'] }}%
+                        </span>
+                    </td>
+                    <td>{{ r['readiness_score'] }}%</td>
+                    <td style="max-width: 280px; font-size: 0.8rem; color: #475569;">{{ r['matched_skills'] or '—' }}</td>
+                    <td style="font-size: 0.8rem; color: #64748b;">{{ r['uploaded_at'] }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('delete_resume', resume_id=r['id']) }}" onsubmit="return confirm('Delete this resume record?');">
+                            <button type="submit" class="btn btn-danger-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+    {% else %}
+      <p style="color: #64748b;">No resume history found yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

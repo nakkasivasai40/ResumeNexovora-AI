@@ -1,0 +1,80 @@
+{% extends "student/layout.html" %}
+{% block title %}JD Matching{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 20px;">
+    <h2 style="font-size: 1.45rem;">Job Description (JD) Matcher</h2>
+    <p style="color: #64748b; font-size: 0.9rem;">Compare your resume against any target company Job Description to find missing keywords.</p>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: start;">
+    <div class="card">
+        <form method="POST">
+            <div class="form-group">
+                <label>Select Saved Resume</label>
+                <select name="resume_id" class="form-control">
+                    {% for r in resumes %}
+                      <option value="{{ r['id'] }}" {% if selected_resume_id and selected_resume_id|int == r['id'] %}selected{% endif %}>
+                          {{ r['file_name'] }} (ATS: {{ r['ats_score'] }}%)
+                      </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Or Paste Custom Resume Text (Optional)</label>
+                <textarea name="custom_resume_text" rows="3" class="form-control" placeholder="Leave empty to use selected saved resume above..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Paste Target Job Description (JD) *</label>
+                <textarea name="jd_text" rows="7" class="form-control" placeholder="Paste the job requirements, skills, and responsibilities from LinkedIn, Naukri, or company career portal..." required>{{ jd_text }}</textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px;">
+                🎯 Calculate JD Match Percentage
+            </button>
+        </form>
+    </div>
+
+    <div class="card">
+        {% if match_result %}
+          <div style="text-align: center; padding: 18px; background: #f8fafc; border-radius: 14px; border: 1px solid #e2e8f0; margin-bottom: 18px;">
+              <div style="font-size: 0.8rem; font-weight: 700; color: #64748b;">JD COMPATIBILITY SCORE</div>
+              <div style="font-size: 2.8rem; font-weight: 800; color: {% if match_result['match_percent'] >= 75 %}#16a34a{% elif match_result['match_percent'] >= 50 %}#d97706{% else %}#dc2626{% endif %};">
+                  {{ match_result['match_percent'] }}%
+              </div>
+              <p style="font-size: 0.86rem; color: #334155; margin-top: 6px;">{{ match_result['advice'] }}</p>
+          </div>
+
+          <div style="margin-bottom: 16px;">
+              <strong style="font-size: 0.86rem;">Matched JD Keywords:</strong>
+              <div style="margin-top: 6px;">
+                  {% for kw in match_result['matched'] %}
+                    <span class="tag-chip tag-green">✓ {{ kw }}</span>
+                  {% endfor %}
+              </div>
+          </div>
+
+          <div>
+              <strong style="font-size: 0.86rem;">Missing Keywords to Add:</strong>
+              <div style="margin-top: 6px;">
+                  {% if match_result['missing'] %}
+                    {% for kw in match_result['missing'] %}
+                      <span class="tag-chip tag-red">+ {{ kw }}</span>
+                    {% endfor %}
+                  {% else %}
+                    <span style="font-size: 0.84rem; color: #16a34a;">All key technical keywords matched!</span>
+                  {% endif %}
+              </div>
+          </div>
+        {% else %}
+          <div style="text-align: center; padding: 52px 20px; color: #64748b;">
+              <div style="font-size: 2.5rem; margin-bottom: 10px;">🎯</div>
+              <h3>Paste a Job Description</h3>
+              <p style="font-size: 0.88rem; margin-top: 6px;">We will highlight which required skills are already in your resume and which keywords you should add before applying.</p>
+          </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

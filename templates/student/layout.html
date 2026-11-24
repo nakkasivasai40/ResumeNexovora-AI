@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dashboard{% endblock %} — ResumeNexovora AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/student.css') }}">
+</head>
+<body>
+
+<aside class="sidebar">
+    <a href="{{ url_for('student_dashboard') }}" class="sidebar-brand">
+        <div class="logo-box">R</div>
+        <span>ResumeNexovora AI</span>
+    </a>
+
+    <nav class="sidebar-nav">
+        <div class="nav-section-label">DASHBOARD</div>
+        <a href="{{ url_for('student_dashboard') }}" class="nav-item {% if active_page == 'dashboard' %}active{% endif %}">
+            <span>🏠</span> Dashboard
+        </a>
+
+        <div class="nav-section-label">RESUME STUDIO</div>
+        <a href="{{ url_for('student_analyzer') }}" class="nav-item {% if active_page == 'analyzer' %}active{% endif %}">
+            <span>📄</span> Resume Analyzer
+        </a>
+        <a href="{{ url_for('student_history') }}" class="nav-item {% if active_page == 'history' %}active{% endif %}">
+            <span>🕒</span> Resume History
+        </a>
+        <a href="{{ url_for('student_jd_matcher') }}" class="nav-item {% if active_page == 'jd_matcher' %}active{% endif %}">
+            <span>🎯</span> JD Matching
+        </a>
+        <a href="{{ url_for('student_compare') }}" class="nav-item {% if active_page == 'compare' %}active{% endif %}">
+            <span>⚖️</span> Resume Compare
+        </a>
+
+        <div class="nav-section-label">CAREER &amp; JOBS</div>
+        <a href="{{ url_for('student_jobs', type='Full-Time') }}" class="nav-item {% if active_page == 'jobs' %}active{% endif %}">
+            <span>💼</span> Job Finder
+        </a>
+        <a href="{{ url_for('student_jobs', type='Internship') }}" class="nav-item">
+            <span>🎓</span> Internships
+        </a>
+        <a href="{{ url_for('student_applications') }}" class="nav-item {% if active_page == 'applications' %}active{% endif %}">
+            <span>📋</span> Applications
+        </a>
+        <a href="{{ url_for('student_roadmap') }}" class="nav-item {% if active_page == 'roadmap' %}active{% endif %}">
+            <span>🧭</span> Career Roadmap
+        </a>
+        <a href="{{ url_for('student_roadmap') }}" class="nav-item">
+            <span>📚</span> Courses
+        </a>
+        <a href="{{ url_for('student_interview_prep') }}" class="nav-item {% if active_page == 'interview' %}active{% endif %}">
+            <span>🎤</span> Interview Prep
+        </a>
+
+        <div class="nav-section-label">ACCOUNT</div>
+        <a href="{{ url_for('student_profile') }}" class="nav-item {% if active_page == 'profile' %}active{% endif %}">
+            <span>👤</span> Profile
+        </a>
+        <a href="{{ url_for('student_profile') }}" class="nav-item">
+            <span>⚙️</span> Settings
+        </a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <a href="{{ url_for('logout') }}" class="logout-link">
+            <span>🚪</span> Logout
+        </a>
+    </div>
+</aside>
+
+<div class="main-wrapper">
+    <header class="topbar">
+        <div class="search-box">
+            <span>🔍</span>
+            <input type="text" id="quickSearchInput" placeholder="Search jobs, skills, or anything...">
+        </div>
+        <div class="user-chip">
+            <span style="font-size: 1.1rem; cursor: pointer;" title="Notifications">🔔</span>
+            <div class="avatar-circle">{{ user['full_name'][0] | upper }}</div>
+            <div>
+                <div style="font-size: 0.86rem; font-weight: 700;">{{ user['full_name'] }}</div>
+                <div style="font-size: 0.72rem; color: #64748b;">Student</div>
+            </div>
+        </div>
+    </header>
+
+    <main class="content-area">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, msg in messages %}
+              <div class="alert alert-{{ category }}">{{ msg }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+</div>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

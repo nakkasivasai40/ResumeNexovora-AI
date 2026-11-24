@@ -1,0 +1,44 @@
+{% extends "student/layout.html" %}
+{% block title %}My Applications{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 20px;">
+    <h2 style="font-size: 1.45rem;">My Job & Internship Applications</h2>
+    <p style="color: #64748b; font-size: 0.9rem;">Track real-time hiring statuses updated by the placement admin team.</p>
+</div>
+
+<div class="card">
+    {% if applications %}
+      <table class="data-table">
+          <thead>
+              <tr>
+                  <th>Role Title</th>
+                  <th>Company</th>
+                  <th>Type</th>
+                  <th>Package / Stipend</th>
+                  <th>Applied Date</th>
+                  <th>Status</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for app in applications %}
+                <tr>
+                    <td><strong>{{ app['title'] }}</strong></td>
+                    <td>{{ app['company'] }}</td>
+                    <td>{{ app['job_type'] }}</td>
+                    <td>{{ app['package'] }}</td>
+                    <td style="color: #64748b; font-size: 0.82rem;">{{ app['applied_at'] }}</td>
+                    <td>
+                        <span class="score-pill {% if app['status'] in ['Shortlisted', 'Selected'] %}score-high{% else %}score-mid{% endif %}">
+                            {{ app['status'] }}
+                        </span>
+                    </td>
+                </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+    {% else %}
+      <p style="color: #64748b;">You haven't applied to any jobs yet. <a href="{{ url_for('student_jobs') }}">Browse open roles →</a></p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResumeNexovora AI — Analyze Your Resume. Discover Your Career Path.</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+</head>
+<body>
+
+<!-- Top White Navbar -->
+<header class="navbar">
+    <div class="nav-container">
+        <a href="{{ url_for('home') }}" class="brand">
+            <div class="brand-icon">N</div>
+            <span>ResumeNexovora AI</span>
+        </a>
+        <nav class="nav-links">
+            <a href="{{ url_for('home') }}" class="active">Home</a>
+            <a href="#features">Features</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </div>
+</header>
+
+<!-- Split Hero Section with Right Side Login Card -->
+<section class="hero-split">
+    <div class="hero-grid">
+        <!-- Left Hero Content -->
+        <div class="hero-left">
+            <div class="hero-pill">✨ AI-POWERED CAREER PLATFORM</div>
+            <h1>Analyze Your Resume.<span>Discover Your Career Path.</span></h1>
+            <p class="subtitle">
+                Get AI-powered resume analysis, ATS score, skill gap insights, job recommendations and personalized career guidance — all in one place.
+            </p>
+
+            <div class="hero-tiles">
+                <div class="h-tile">
+                    <div class="h-tile-icon" style="background: #10b981;">📄</div>
+                    <span>Resume<br>Analysis</span>
+                </div>
+                <div class="h-tile">
+                    <div class="h-tile-icon" style="background: #7c3aed;">🎯</div>
+                    <span>ATS Score<br>&amp; Matching</span>
+                </div>
+                <div class="h-tile">
+                    <div class="h-tile-icon" style="background: #f59e0b;">🎓</div>
+                    <span>Skill Gap &amp;<br>Learning Paths</span>
+                </div>
+                <div class="h-tile">
+                    <div class="h-tile-icon" style="background: #2563eb;">💼</div>
+                    <span>Job<br>Opportunities</span>
+                </div>
+            </div>
+
+            <div class="hero-tagline">
+                Better Skills &nbsp;&rarr;&nbsp; Better Jobs &nbsp;&rarr;&nbsp; A Brighter Future
+            </div>
+        </div>
+
+        <!-- Right Side "Welcome Back" Login Card -->
+        <div class="login-card">
+            <h2>Welcome Back 👋</h2>
+            <p class="card-sub">Login to your account and continue your career journey.</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, msg in messages %}
+                  <div class="alert alert-{{ category }}">{{ msg }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('student_login') }}">
+                <div class="input-group">
+                    <span class="icon">✉️</span>
+                    <input type="email" id="home_email" name="email" placeholder="Email Address" required>
+                </div>
+
+                <div class="input-group">
+                    <span class="icon">🔒</span>
+                    <input type="password" id="home_password" name="password" placeholder="Password" required>
+                </div>
+
+                <div class="login-options">
+                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                        <input type="checkbox" name="remember"> Remember me
+                    </label>
+                    <a href="{{ url_for('student_login') }}">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="btn-login-submit">Login &nbsp;&rarr;</button>
+            </form>
+
+            <div class="divider-or">OR</div>
+
+            <a href="{{ url_for('student_register') }}" class="btn-create-acc">
+                👤 Create New Account
+            </a>
+
+            <div class="demo-box">
+                <strong>Demo Student:</strong> <code>rahul@student.com</code> / <code>Student@123</code>
+                <button type="button" onclick="fillQuickDemo()" style="margin-left: 6px; background: #1d63ed; color: white; border: none; padding: 3px 8px; border-radius: 5px; font-size: 0.72rem; cursor: pointer;">
+                    Fill
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Bottom 4-Column Feature Strip -->
+<section id="features" class="bottom-features">
+    <div class="bf-grid">
+        <div class="bf-item">
+            <div class="bf-icon" style="background: #eff6ff; color: #2563eb;">🚀</div>
+            <h4>Stand Out to Recruiters</h4>
+            <p>Get a professional resume score and personalized suggestions.</p>
+        </div>
+        <div class="bf-item">
+            <div class="bf-icon" style="background: #f3e8ff; color: #7c3aed;">🎯</div>
+            <h4>Find the Right Jobs</h4>
+            <p>Get job recommendations based on your skills and goals.</p>
+        </div>
+        <div class="bf-item">
+            <div class="bf-icon" style="background: #dcfce7; color: #16a34a;">🎓</div>
+            <h4>Learn &amp; Grow</h4>
+            <p>Discover courses to fill your skill gaps and boost your career.</p>
+        </div>
+        <div class="bf-item">
+            <div class="bf-icon" style="background: #fef3c7; color: #d97706;">📊</div>
+            <h4>Track Your Progress</h4>
+            <p>Save your history and monitor your career growth.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Dark Bottom Copyright Footer -->
+<footer id="contact" class="footer-bar">
+    <div class="footer-bar-inner">
+        <span>&copy; 2026 ResumeNexovora AI. All rights reserved.</span>
+        <div>
+            <a href="#about">Privacy Policy</a>
+            <a href="#about">Terms of Service</a>
+            <a href="{{ url_for('admin_login') }}" style="color: #93c5fd; font-weight: 600;">Admin Portal</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+function fillQuickDemo() {
+    document.getElementById('home_email').value = 'rahul@student.com';
+    document.getElementById('home_password').value = 'Student@123';
+}
+</script>
+</body>
+</html>

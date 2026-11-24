@@ -1,0 +1,19 @@
+{% extends "student/layout.html" %}
+{% block title %}Interview Prep{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 20px;">
+    <h2 style="font-size: 1.45rem;">Placement & Technical Interview Prep</h2>
+    <p style="color: #64748b; font-size: 0.9rem;">High-yield technical, behavioral, and HR questions with structured model answers.</p>
+</div>
+
+{% for category, q, ans in questions %}
+  <div class="card" style="margin-bottom: 14px;">
+      <span class="tag-chip tag-blue" style="margin-left: 0; margin-bottom: 8px;">{{ category }}</span>
+      <h3 style="font-size: 1.02rem; margin-bottom: 8px;">Q: {{ q }}</h3>
+      <div style="background: #f8fafc; border-left: 3px solid #2563eb; padding: 12px 14px; font-size: 0.88rem; color: #334155; border-radius: 0 10px 10px 0;">
+          <strong>Model Answer:</strong> {{ ans }}
+      </div>
+  </div>
+{% endfor %}
+{% endblock %}

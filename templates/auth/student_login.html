@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Login — ResumeNexovora AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+</head>
+<body class="auth-wrapper">
+
+<header class="navbar">
+    <div class="nav-container">
+        <a href="{{ url_for('home') }}" class="brand">
+            <div class="brand-icon">N</div>
+            <span>ResumeNexovora</span>
+            <span class="ai-pill">AI</span>
+        </a>
+        <div class="nav-actions">
+            <a href="{{ url_for('home') }}" class="btn btn-outline">← Back to Home</a>
+            <a href="{{ url_for('student_register') }}" class="btn btn-primary">Create Account</a>
+        </div>
+    </div>
+</header>
+
+<div class="auth-card-container">
+    <div class="auth-card">
+        <div style="display: inline-block; background: #eff6ff; color: #2563eb; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 999px; margin-bottom: 12px;">
+            🎓 STUDENT PORTAL
+        </div>
+        <h2>Welcome Back</h2>
+        <p class="desc">Sign in to access your ATS resume scores, career roadmap, and job matches.</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, msg in messages %}
+              <div class="alert alert-{{ category }}">{{ msg }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('student_login') }}">
+            <div class="form-group">
+                <label for="email">Student Email Address</label>
+                <input type="email" id="email" name="email" class="form-control" placeholder="you@student.com" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 0.95rem;">
+                Login to Student Dashboard →
+            </button>
+        </form>
+
+        <div class="demo-box">
+            <strong>Quick Demo Student Login:</strong><br>
+            Email: <code>rahul@student.com</code> | Password: <code>Student@123</code>
+            <button type="button" onclick="fillStudentDemo()" style="margin-top: 8px; background: #2563eb; color: white; border: none; padding: 5px 10px; border-radius: 6px; font-size: 0.76rem; cursor: pointer;">
+                Auto-Fill Demo Credentials
+            </button>
+        </div>
+
+        <p style="text-align: center; margin-top: 20px; font-size: 0.88rem; color: #475569;">
+            New to ResumeNexovora AI? <a href="{{ url_for('student_register') }}" style="color: #2563eb; font-weight: 700; text-decoration: none;">Create Student Account</a>
+        </p>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="footer-inner">
+        <span>&copy; 2026 ResumeNexovora AI. All rights reserved.</span>
+        <a href="{{ url_for('admin_login') }}" class="admin-portal-link">Admin Login →</a>
+    </div>
+</footer>
+
+<script>
+function fillStudentDemo() {
+    document.getElementById('email').value = 'rahul@student.com';
+    document.getElementById('password').value = 'Student@123';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+{% extends "admin/layout.html" %}
+{% block title %}Admin Overview{% endblock %}
+
+{% block content %}
+<h2 style="margin-bottom: 18px;">Platform Analytics & Health</h2>
+
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div style="font-size: 0.8rem; color: #94a3b8;">Total Students</div>
+        <div class="kpi-val">{{ total_students }}</div>
+    </div>
+    <div class="kpi-card">
+        <div style="font-size: 0.8rem; color: #94a3b8;">Resumes Analyzed</div>
+        <div class="kpi-val">{{ total_resumes }}</div>
+    </div>
+    <div class="kpi-card">
+        <div style="font-size: 0.8rem; color: #94a3b8;">Average ATS Score</div>
+        <div class="kpi-val" style="color: #34d399;">{{ avg_ats }}%</div>
+    </div>
+    <div class="kpi-card">
+        <div style="font-size: 0.8rem; color: #94a3b8;">Active Job Postings</div>
+        <div class="kpi-val" style="color: #38bdf8;">{{ active_jobs }}</div>
+    </div>
+    <div class="kpi-card">
+        <div style="font-size: 0.8rem; color: #94a3b8;">Total Applications</div>
+        <div class="kpi-val" style="color: #fbbf24;">{{ total_apps }}</div>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <h3>Recent Registered Students</h3>
+            <a href="{{ url_for('admin_users') }}" style="color: #818cf8; font-size: 0.82rem; text-decoration: none;">Manage All →</a>
+        </div>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Target Role</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in recent_students %}
+                  <tr>
+                      <td>
+                          <strong>{{ s['full_name'] }}</strong><br>
+                          <span style="font-size: 0.76rem; color: #94a3b8;">{{ s['email'] }}</span>
+                      </td>
+                      <td>{{ s['target_role'] }}</td>
+                      <td>
+                          <span class="{% if s['status'] == 'Active' %}badge-ok{% else %}badge-fail{% endif %}">{{ s['status'] }}</span>
+                      </td>
+                  </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <h3>Recent Security & Activity Logs</h3>
+            <a href="{{ url_for('admin_logs') }}" style="color: #818cf8; font-size: 0.82rem; text-decoration: none;">Full Audit →</a>
+        </div>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Action</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in recent_logs %}
+                  <tr>
+                      <td style="font-size: 0.8rem;">{{ log['user_email'] }}</td>
+                      <td style="font-size: 0.8rem; color: #cbd5e1;">{{ log['action'] }}</td>
+                      <td>
+                          <span class="{% if log['status'] == 'Success' %}badge-ok{% else %}badge-fail{% endif %}">{{ log['status'] }}</span>
+                      </td>
+                  </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

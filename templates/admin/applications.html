@@ -1,0 +1,50 @@
+{% extends "admin/layout.html" %}
+{% block title %}Student Applications{% endblock %}
+
+{% block content %}
+<h2 style="margin-bottom: 18px;">Student Job & Internship Applications</h2>
+
+<div class="card">
+    {% if applications %}
+      <table class="data-table">
+          <thead>
+              <tr>
+                  <th>Student</th>
+                  <th>Job Role</th>
+                  <th>Company</th>
+                  <th>Applied On</th>
+                  <th>Current Status</th>
+                  <th>Update Status</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for a in applications %}
+                <tr>
+                    <td>
+                        <strong>{{ a['student_name'] }}</strong><br>
+                        <span style="font-size: 0.76rem; color: #94a3b8;">{{ a['student_email'] }}</span>
+                    </td>
+                    <td>{{ a['job_title'] }}</td>
+                    <td>{{ a['company'] }}</td>
+                    <td style="font-size: 0.8rem; color: #94a3b8;">{{ a['applied_at'] }}</td>
+                    <td><span class="badge-ok">{{ a['status'] }}</span></td>
+                    <td>
+                        <form method="POST" style="display: flex; gap: 6px;">
+                            <input type="hidden" name="app_id" value="{{ a['id'] }}">
+                            <select name="status" class="form-control" style="padding: 6px 10px; font-size: 0.82rem;">
+                                {% for st in ['Applied', 'Shortlisted', 'Interview Scheduled', 'Selected', 'Rejected'] %}
+                                  <option value="{{ st }}" {% if st == a['status'] %}selected{% endif %}>{{ st }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="submit" class="btn btn-primary" style="padding: 6px 12px;">Save</button>
+                        </form>
+                    </td>
+                </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+    {% else %}
+      <p style="color: #94a3b8;">No student applications submitted yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

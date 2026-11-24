@@ -1,0 +1,33 @@
+{% extends "admin/layout.html" %}
+{% block title %}Security & Activity Logs{% endblock %}
+
+{% block content %}
+<h2 style="margin-bottom: 18px;">Security & Authentication Audit Logs</h2>
+
+<div class="card">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>User Email</th>
+                <th>Role</th>
+                <th>Activity / Event</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+              <tr>
+                  <td style="font-size: 0.8rem; color: #94a3b8;">{{ log['timestamp'] }}</td>
+                  <td>{{ log['user_email'] }}</td>
+                  <td style="text-transform: uppercase; font-size: 0.76rem; font-weight: 700;">{{ log['role'] }}</td>
+                  <td>{{ log['action'] }}</td>
+                  <td>
+                      <span class="{% if log['status'] == 'Success' %}badge-ok{% else %}badge-fail{% endif %}">{{ log['status'] }}</span>
+                  </td>
+              </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

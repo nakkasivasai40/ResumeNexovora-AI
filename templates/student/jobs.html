@@ -1,0 +1,52 @@
+{% extends "student/layout.html" %}
+{% block title %}Jobs & Internships{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 20px;">
+    <div>
+        <h2 style="font-size: 1.45rem;">Curated Jobs & Internships</h2>
+        <p style="color: #64748b; font-size: 0.9rem;">Opportunities matched to your resume skills and {{ user['target_role'] }} track.</p>
+    </div>
+    <div style="display: flex; gap: 8px;">
+        <a href="{{ url_for('student_jobs', type='All') }}" class="btn {% if current_type == 'All' %}btn-primary{% else %}btn-white{% endif %}">All</a>
+        <a href="{{ url_for('student_jobs', type='Full-Time') }}" class="btn {% if current_type == 'Full-Time' %}btn-primary{% else %}btn-white{% endif %}">Full-Time</a>
+        <a href="{{ url_for('student_jobs', type='Internship') }}" class="btn {% if current_type == 'Internship' %}btn-primary{% else %}btn-white{% endif %}">Internships</a>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px;">
+    {% for job in jobs %}
+      <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+                  <div>
+                      <span class="tag-chip tag-blue" style="margin-left: 0;">{{ job['job_type'] }}</span>
+                      <h3 style="font-size: 1.1rem; margin-top: 6px;">{{ job['title'] }}</h3>
+                      <div style="font-size: 0.85rem; color: #475569; font-weight: 600;">{{ job['company'] }} • {{ job['location'] }}</div>
+                  </div>
+                  <span class="score-pill score-high">{{ job['fit_score'] }}% Skill Fit</span>
+              </div>
+
+              <p style="font-size: 0.85rem; color: #64748b; margin: 10px 0;">{{ job['description'] }}</p>
+
+              <div style="margin: 10px 0;">
+                  {% for sk in job['required_skills'] %}
+                    <span class="tag-chip" style="background: #f1f5f9; color: #334155;">{{ sk }}</span>
+                  {% endfor %}
+              </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 14px; border-top: 1px solid #f1f5f9; margin-top: 12px;">
+              <strong style="color: #0f172a; font-size: 0.9rem;">💰 {{ job['package'] }}</strong>
+              {% if job['applied'] %}
+                <span class="score-pill score-high">✓ Applied</span>
+              {% else %}
+                <form method="POST" action="{{ url_for('apply_job', job_id=job['id']) }}">
+                    <button type="submit" class="btn btn-primary">Apply Now →</button>
+                </form>
+              {% endif %}
+          </div>
+      </div>
+    {% endfor %}
+</div>
+{% endblock %}

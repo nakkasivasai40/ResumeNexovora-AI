@@ -1,0 +1,47 @@
+{% extends "student/layout.html" %}
+{% block title %}Career Roadmap{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
+    <div>
+        <h2 style="font-size: 1.45rem;">Personalized Career Roadmap</h2>
+        <p style="color: #64748b; font-size: 0.9rem;">Step-by-step learning milestones to master your target role.</p>
+    </div>
+    <form method="GET" style="display: flex; gap: 8px;">
+        <select name="role" class="form-control" onchange="this.form.submit()">
+            {% for r in roles %}
+              <option value="{{ r }}" {% if r == selected_role %}selected{% endif %}>{{ r }}</option>
+            {% endfor %}
+        </select>
+    </form>
+</div>
+
+<div style="display: grid; grid-template-columns: 1.4fr 0.9fr; gap: 20px;">
+    <div class="card">
+        <h3 style="margin-bottom: 16px;">5-Stage Mastery Path: {{ selected_role }}</h3>
+        {% for title, desc in steps %}
+          <div style="padding: 16px; border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 12px; background: #f8fafc;">
+              <div style="font-weight: 800; color: #2563eb; font-size: 0.96rem;">{{ title }}</div>
+              <p style="font-size: 0.86rem; color: #475569; margin-top: 5px;">{{ desc }}</p>
+          </div>
+        {% endfor %}
+    </div>
+
+    <div class="card">
+        <h3 style="margin-bottom: 12px;">Core Skill Stack Required</h3>
+        <div style="margin-bottom: 20px;">
+            {% for sk in role_skills %}
+              <span class="tag-chip tag-blue">{{ sk | title }}</span>
+            {% endfor %}
+        </div>
+
+        <h3 style="margin-bottom: 10px;">Your Priority Skill Gaps</h3>
+        <p style="font-size: 0.82rem; color: #64748b; margin-bottom: 10px;">Focus on building mini-projects with these missing skills:</p>
+        <div>
+            {% for sk in missing_skills %}
+              <span class="tag-chip tag-red">+ {{ sk }}</span>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

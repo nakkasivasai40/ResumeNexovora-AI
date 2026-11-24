@@ -1,0 +1,43 @@
+{% extends "admin/layout.html" %}
+{% block title %}Student Accounts{% endblock %}
+
+{% block content %}
+<h2 style="margin-bottom: 18px;">Registered Student Accounts</h2>
+
+<div class="card">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Student Name</th>
+                <th>Email</th>
+                <th>College</th>
+                <th>Target Role</th>
+                <th>Resumes / Best ATS</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in students %}
+              <tr>
+                  <td><strong>{{ s['full_name'] }}</strong></td>
+                  <td>{{ s['email'] }}</td>
+                  <td style="font-size: 0.8rem; color: #cbd5e1;">{{ s['college'] }}</td>
+                  <td>{{ s['target_role'] }}</td>
+                  <td>{{ s['resume_count'] }} resumes • <strong>{{ s['best_ats'] }}%</strong></td>
+                  <td>
+                      <span class="{% if s['status'] == 'Active' %}badge-ok{% else %}badge-fail{% endif %}">{{ s['status'] }}</span>
+                  </td>
+                  <td>
+                      <form method="POST" action="{{ url_for('admin_toggle_user', user_id=s['id']) }}">
+                          <button type="submit" class="btn btn-secondary">
+                              {% if s['status'] == 'Active' %}Suspend{% else %}Activate{% endif %}
+                          </button>
+                      </form>
+                  </td>
+              </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

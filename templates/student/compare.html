@@ -1,0 +1,66 @@
+{% extends "student/layout.html" %}
+{% block title %}Resume Compare{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 20px;">
+    <h2 style="font-size: 1.45rem;">Side-by-Side Resume Version Comparison</h2>
+    <p style="color: #64748b; font-size: 0.9rem;">Compare two versions of your resume to verify ATS score improvements.</p>
+</div>
+
+{% if resumes | length >= 2 %}
+  <form method="GET" class="card" style="display: flex; gap: 16px; align-items: end; margin-bottom: 20px;">
+      <div style="flex: 1;">
+          <label style="font-size: 0.82rem; font-weight: 700;">Version A (Baseline)</label>
+          <select name="r1" class="form-control">
+              {% for r in resumes %}
+                <option value="{{ r['id'] }}" {% if resume_a and r['id'] == resume_a['id'] %}selected{% endif %}>{{ r['file_name'] }} ({{ r['ats_score'] }}%)</option>
+              {% endfor %}
+          </select>
+      </div>
+      <div style="flex: 1;">
+          <label style="font-size: 0.82rem; font-weight: 700;">Version B (Updated)</label>
+          <select name="r2" class="form-control">
+              {% for r in resumes %}
+                <option value="{{ r['id'] }}" {% if resume_b and r['id'] == resume_b['id'] %}selected{% endif %}>{{ r['file_name'] }} ({{ r['ats_score'] }}%)</option>
+              {% endfor %}
+          </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Compare Versions</button>
+  </form>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+      {% for label, item in [('Version A', resume_a), ('Version B', resume_b)] %}
+        <div class="card">
+            <span style="font-size: 0.75rem; font-weight: 700; color: #2563eb;">{{ label }}</span>
+            <h3 style="margin: 4px 0 12px;">{{ item['file_name'] }}</h3>
+            <div style="display: flex; gap: 12px; margin-bottom: 14px;">
+                <span class="score-pill score-high">ATS: {{ item['ats_score'] }}%</span>
+                <span class="score-pill score-mid">Readiness: {{ item['readiness_score'] }}%</span>
+            </div>
+            <div style="margin-bottom: 12px;">
+                <strong style="font-size: 0.84rem;">Matched Skills:</strong>
+                <div style="margin-top: 4px;">
+                    {% for s in (item['matched_skills'] or '').split(',') if s.strip() %}
+                      <span class="tag-chip tag-green">{{ s.strip() }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div>
+                <strong style="font-size: 0.84rem;">Remaining Skill Gaps:</strong>
+                <div style="margin-top: 4px;">
+                    {% for s in (item['missing_skills'] or '').split(',') if s.strip() %}
+                      <span class="tag-chip tag-red">{{ s.strip() }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+      {% endfor %}
+  </div>
+{% else %}
+  <div class="card" style="text-align: center; padding: 40px;">
+      <h3>Upload at least 2 resume versions to compare</h3>
+      <p style="color: #64748b; margin: 8px 0 16px;">Once you scan a second resume version, you can compare improvements side-by-side here.</p>
+      <a href="{{ url_for('student_analyzer') }}" class="btn btn-primary">Go to Resume Analyzer</a>
+  </div>
+{% endif %}
+{% endblock %}
